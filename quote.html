@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quote</title>
+
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function () {
+      emailjs.init({
+        publicKey: "mFLqWSqDySneSDkP4",
+      });
+    })();
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f0f0;
+      background-image: url('images/quote-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .form {
+      background: rgba(255, 255, 255, 0.473);
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+    .form h1 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-family: 'Times New Roman', Times, serif;
+    }
+    .form input, .form textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      
+    }
+    input:focus {
+      outline: none;
+    }
+    .form .error {
+      color: red;
+      font-size: 12px;
+      margin: -4px 0 6px;
+    }
+    .form button {
+      width: 100%;
+      padding: 10px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .form button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="form" id="formcontact">
+    <h1>Contact Us</h1>
+    <form id="contact-form">
+      <input placeholder="Name" id="name" type="text" /><div class="error" id="name-error"></div>
+      <input placeholder="Email" id="email" type="text" /><div class="error" id="email-error"></div>
+      <input placeholder="What do you want to build/remodel?" id="remodel" type="text" /><div class="error" id="remodel-error"></div>
+      <textarea placeholder="Your Message" type="text" id="message"></textarea><div class="error" id="message-error"></div>
+      <button onclick="sendEmail(event)">Send Message</button>
+    </form>
+  </div>
+
+  <script>
+    function sendEmail(event) {
+      event.preventDefault();
+
+      // Get values
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const remodel = document.getElementById("remodel").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+
+      // Get error fields
+      const nameErr = document.getElementById("name-error");
+      const emailErr = document.getElementById("email-error");
+      const remodelErr = document.getElementById("remodel-error");
+
+      // Reset errors
+      nameErr.textContent = "";
+      emailErr.textContent = "";
+      remodelErr.textContent = "";
+
+      let valid = true;
+
+      // Validation
+      if (name === "") {
+        nameErr.textContent = "Name is required.";
+        valid = false;
+      }
+
+      const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+      if (email === "") {
+        emailErr.textContent = "Email is required.";
+        valid = false;
+      } else if (!emailPattern.test(email)) {
+        emailErr.textContent = "Enter a valid email address.";
+        valid = false;
+      }
+
+      if (remodel === "") {
+        remodelErr.textContent = "This field is required.";
+        valid = false;
+      }
+
+
+      if (!valid) return;
+
+      // Send via EmailJS
+      const params = {
+        name: name,
+        email: email,
+        remodel: remodel,
+        message: message
+      };
+
+      emailjs.send("service_jeh5peq", "template_6u0kkrd", params)
+        .then(function(response) {
+          console.log("SUCCESS!", response.status, response.text);
+          alert("Message sent successfully!");
+          document.getElementById("contact-form").reset();
+        }, function(error) {
+          console.log("FAILED...", error);
+          alert("Failed to send message. Please try again later.");
+        });
+    }
+  </script>
+</body>
+</html>
